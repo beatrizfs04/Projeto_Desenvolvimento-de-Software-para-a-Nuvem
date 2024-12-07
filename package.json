@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "@supabase/supabase-js": "^2.47.2",
+    "express": "^4.21.1",
+    "firebase": "^11.0.2",
+    "firebase-admin": "^13.0.1",
+    "firebase-functions": "^6.1.1",
+    "node-scp": "^0.0.23",
+    "path": "^0.12.7",
+    "simple-ssh": "^1.1.1",
+    "supabase": "^2.0.0"
+  }
+}

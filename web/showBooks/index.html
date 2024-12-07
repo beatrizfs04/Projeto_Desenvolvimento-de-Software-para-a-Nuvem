@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Home</title>
+        <!-- <link rel="stylesheet" href="styles"> -->
+    </head>
+    <body>
+        <p>Let's Get All Books</p>
+        <div id="bookList"></div>
+    </body>
+    <script>
+        window.onload = async function() {
+            try {
+                const response = await fetch('/api/showBooks', {
+                    method: 'GET', 
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const books = await response.json();
+
+                for (const book of books) {
+                    const bookDiv = document.createElement('div');
+
+                    const bookInfo = document.createElement('p');
+                    bookInfo.textContent = `ID: ${book.ID} | YEAR: ${book.YEAR} | TITLE: ${book.TITLE} | LANGUANGE: ${book.LANGUAGE} | AUTHORS: ${book.AUTHORS}`;
+
+                    bookDiv.appendChild(bookInfo);
+                    bookList = document.getElementById('bookList');
+                    bookList.appendChild(bookDiv);
+                }
+            } catch (error) {
+                alert("An error occurred: " + error);
+            }
+        };
+
+    </script>
+</html>
