@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Home</title>
+        <!-- <link rel="stylesheet" href="styles"> -->
+    </head>
+    <body>
+        <p>Let's Delete a Book</p>
+        <label for="bookId">Insert Book ID:</label>
+        <input required id="bookId" type="number" placeholder="Book ID"><br>
+        <button onclick="deleteBook()">Delete Book</button>
+        <div id="bookList"></div>
+    </body>
+    <script>
+        async function deleteBook() {
+            try {
+                const idInput = document.getElementById("bookId");
+                const queryParams = new URLSearchParams({ id: idInput.value }).toString();
+                const url = `/api/deleteBook?${queryParams}`;
+                const response = await fetch(url, {
+                    method: 'DELETE', 
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const book = await response.json();
+
+                const error = book.message;
+
+                if (book.message) {
+                    console.error(book.message);
+                    alert(book.message);
+                    return;
+                }
+
+                const bookDiv = document.createElement('div');
+                const bookInfo = document.createElement('p');
+                alert("Book Sucessfully Deleted!");
+                console.log("Book Sucessfully Deleted!");
+                bookInfo.textContent = `ID: ${book.ID} | YEAR: ${book.YEAR} | TITLE: ${book.TITLE} | LANGUANGE: ${book.LANGUAGE} | AUTHORS: ${book.AUTHORS}`;
+
+                bookDiv.appendChild(bookInfo);
+                bookList = document.getElementById('bookList');
+                bookList.appendChild(bookDiv);
+            } catch (error) {
+                alert("An error occurred: " + error);
+            }
+        }
+    </script>
+</html>

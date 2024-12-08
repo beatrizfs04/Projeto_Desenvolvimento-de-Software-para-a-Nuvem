@@ -14,6 +14,8 @@ app.get('/', function(req, res) { res.sendFile(path.join(__dirname, '/web/index.
 app.get('/showBooks', function(req, res) { res.sendFile(path.join(__dirname, '/web/showBooks/index.html')) });
 app.get('/showBook', function(req, res) { res.sendFile(path.join(__dirname, '/web/showBook/index.html')) });
 app.get('/updateBook', function(req, res) { res.sendFile(path.join(__dirname, '/web/updateBook/index.html')) });
+app.get('/insertBook', function(req, res) { res.sendFile(path.join(__dirname, '/web/insertBook/index.html')) });
+app.get('/deleteBook', function(req, res) { res.sendFile(path.join(__dirname, '/web/deleteBook/index.html')) });
 
 /* API */
 app.use('/api/', api);

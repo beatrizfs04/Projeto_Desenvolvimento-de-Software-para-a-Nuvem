@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Home</title>
+        <!-- <link rel="stylesheet" href="styles"> -->
+    </head>
+    <body>
+        <p>Let's Insert a Book</p>
+        <label for="bookDate">Insert Book Date:</label>
+        <input id="bookDate" type="date" placeholder="Book Date"><br>
+        <label for="bookTitle">Insert Book Title:</label>
+        <input id="bookTitle" type="text" placeholder="Book Title"><br>
+        <label for="bookLanguage">Insert Book Language:</label>
+        <input id="bookLanguage" type="text" placeholder="Book Language"><br>
+        <label for="bookAuthors">Insert Book Authors:</label>
+        <input id="bookAuthors" type="text" placeholder="Book Authors"><br>
+        <button onclick="insertBook()">Insert Book</button>
+        <div id="bookList"></div>
+    </body>
+    <script>
+        async function insertBook() {
+            try {
+                const dateInput = document.getElementById("bookDate");
+                const titleInput = document.getElementById("bookTitle");
+                const languageInput = document.getElementById("bookLanguage");
+                const authorsInput = document.getElementById("bookAuthors");
+                const queryParams = new URLSearchParams({ date: dateInput.value,
+                                                          title: titleInput.value,
+                                                          language: languageInput.value,
+                                                          authors: authorsInput.value }).toString();
+                const url = `/api/insertBook?${queryParams}`;
+                const response = await fetch(url, {
+                    method: 'POST', 
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const book = await response.json();
+
+                const error = book.message;
+
+                if (book.message) {
+                    console.error(book.message);
+                    alert(book.message);
+                    return;
+                }
+
+                const bookDiv = document.createElement('div');
+                const bookInfo = document.createElement('p');
+                alert("Book Sucessfully Inserted!");
+                console.log("Book Sucessfully Inserted!");
+                bookInfo.textContent = `ID: ${book.ID} | YEAR: ${book.YEAR} | TITLE: ${book.TITLE} | LANGUANGE: ${book.LANGUAGE} | AUTHORS: ${book.AUTHORS}`;
+
+                bookDiv.appendChild(bookInfo);
+                bookList = document.getElementById('bookList');
+                bookList.appendChild(bookDiv);
+            } catch (error) {
+                alert("An error occurred: " + error);
+            }
+        }
+
+    </script>
+</html>
