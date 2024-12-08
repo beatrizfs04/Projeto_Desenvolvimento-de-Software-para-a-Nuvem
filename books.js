@@ -26,6 +26,36 @@ functions.showBookByID = async function(id) {
     }
 };
 
+functions.updateBookByID = async function(id, newdata) {
+    try {
+        var {data, error} = await supabase.from('books').select('*').eq('ID', id);
+        if (data.length === 0) { return {message: 'Livro Inexistente'}; }
+        const dataToUpdate = {date: (newdata.date ? newdata.date : data[0].YEAR),
+            title: (newdata.title ? newdata.title : data[0].TITLE),
+            language: (newdata.language ? newdata.language : data[0].LANGUAGE),
+            authors: (newdata.authors ? newdata.authors : data[0].AUTHORS)}
+        try {
+            const {error} = await supabase.from('books').update({YEAR: dataToUpdate.date,
+                                                                                TITLE: dataToUpdate.title,
+                                                                                LANGUAGE: dataToUpdate.language,
+                                                                                AUTHORS: dataToUpdate.authors}).eq('ID', id);
+            try {
+                const {data, error} = await supabase.from('books').select('*').eq('ID', id);
+                return data[0];
+            } catch(error) {
+                console.error(error);
+                return {message: 'Erro ao Atualizar o Livro'};
+            }
+        } catch(error) {
+            console.error(error);
+            return {message: 'Erro ao Atualizar o Livro'};
+        }
+    } catch (error) {
+        console.error(error);
+        return {message: 'Erro ao Mostrar os Livros'};
+    }
+}
+
 /* exports.adicionarLivro = async (req, res) => {
     const { ID, YEAR, TITLE, LANGUAGE, AUTHORS } = req.body;
     if (ID === undefined || typeof ID !== 'number' || isNaN(ID)) {

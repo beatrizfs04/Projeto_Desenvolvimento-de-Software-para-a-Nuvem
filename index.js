@@ -13,6 +13,7 @@ app.get('/', function(req, res) { res.sendFile(path.join(__dirname, '/web/index.
 /* app.get('/startCatalog', books.inicializarCatalogo()); */
 app.get('/showBooks', function(req, res) { res.sendFile(path.join(__dirname, '/web/showBooks/index.html')) });
 app.get('/showBook', function(req, res) { res.sendFile(path.join(__dirname, '/web/showBook/index.html')) });
+app.get('/updateBook', function(req, res) { res.sendFile(path.join(__dirname, '/web/updateBook/index.html')) });
 
 /* API */
 app.use('/api/', api);
