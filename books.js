@@ -7,7 +7,7 @@ const { type } = require('os');
 
 functions.mostrarLivros = async function() {
     try {
-        const {data, error} = await supabase.from('books').select('*').order('ID', {ascending: true});
+        const {data, error} = await supabase.from('books').select().order('ID', {ascending: true});
         return JSON.parse(JSON.stringify(data));
     } catch (error) {
         console.error(error);
@@ -17,7 +17,7 @@ functions.mostrarLivros = async function() {
 
 functions.showBookByID = async function(id) {
     try {
-        const {data, error} = await supabase.from('books').select('*').eq('ID', id);
+        const {data, error} = await supabase.from('books').select().eq('ID', id);
         if (data.length === 0) { return {message: 'Livro Inexistente'}; }
         return data[0];
     } catch (error) {
@@ -28,7 +28,7 @@ functions.showBookByID = async function(id) {
 
 functions.updateBookByID = async function(id, newdata) {
     try {
-        var {data, error} = await supabase.from('books').select('*').eq('ID', id);
+        var {data, error} = await supabase.from('books').select().eq('ID', id);
         if (data.length === 0) { return {message: 'Livro Inexistente'}; }
         const dataToUpdate = {date: (newdata.date ? newdata.date : data[0].YEAR),
             title: (newdata.title ? newdata.title : data[0].TITLE),
@@ -40,7 +40,7 @@ functions.updateBookByID = async function(id, newdata) {
                                                                                 LANGUAGE: dataToUpdate.language,
                                                                                 AUTHORS: dataToUpdate.authors}).eq('ID', id);
             try {
-                const {data, error} = await supabase.from('books').select('*').eq('ID', id);
+                const {data, error} = await supabase.from('books').select().eq('ID', id);
                 return data[0];
             } catch(error) {
                 console.error(error);
