@@ -71,6 +71,8 @@ let processHDFSFile = async function() {
 
 let hadoopCommands = function() {
   return new Promise((resolve, reject) => {
+    //faz os comandos que fazemos à mão 
+    //esse comando apaga o diretório que lá tem o ficheiro pra fazer de novo
       ssh.exec(`/home/hadoop/hadoop/bin/hdfs dfs -rm -r -f ${hadoopOutputPath}`, {
         out: console.log.bind(console),
         err: console.error.bind(console),
@@ -103,7 +105,9 @@ let Initialize = function() {
     password: '1234',
   }).then(async client => {
     // Aguardar que o cliente seja conectado e enviar o ficheiro catalog.csv para o trabalhar
+    //enquanto espera a conexão do cliente, vai buscar o catalog que ta no diretório
     client.uploadFile('./catalog.csv', `${remoteCsvFilePath}`).then(async response => {
+      //insere o ficheiro na máquina virtual
         console.log("> File Inserted and Now Running Hadoop");
         client.close();
         try {
