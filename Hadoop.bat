@@ -1,5 +1,5 @@
 @echo off
 call npm i
 call npm update
-call node start.js
+call node hadoop.js
 pause

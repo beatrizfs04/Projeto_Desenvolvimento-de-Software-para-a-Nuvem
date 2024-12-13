@@ -3,7 +3,7 @@ var functions = {};
 const fs = require('fs');
 const path = require('path');
 const supabase = require('./config/supabase');
-const { type } = require('os');
+const Hadoop = require('./hadoop.js');
 
 // Função responsável por devolver todos os livros da base de dados
 functions.mostrarLivros = async function() {
@@ -84,11 +84,12 @@ functions.insertBook = async function(newdata) {
                               authors: (newdata.authors ? newdata.authors : "")}
         try {
             // Inserir novo livro na base de dados após obter o seu ID e depois devolvê-lo
-            const { data, error} = await supabase.from('books').upsert({ID: dataToUpdate.id,
+            const { data, error} = await supabase.from('books').insert({ID: dataToUpdate.id,
                                                                         YEAR: dataToUpdate.date,
                                                                         TITLE: dataToUpdate.title,
                                                                         LANGUAGE: dataToUpdate.language,
                                                                         AUTHORS: dataToUpdate.authors}).select();
+            await Hadoop.UpdateFileFromInfo();
             return data[0];
         } catch(error) {
             console.error(error);
