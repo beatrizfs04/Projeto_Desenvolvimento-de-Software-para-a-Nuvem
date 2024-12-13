@@ -13,7 +13,7 @@
         <label for="bookDate">Insert Book Date:</label>
         <input id="bookDate" type="date" placeholder="Book Date"><br>
         <label for="bookTitle">Insert Book Title:</label>
-        <input id="bookTitle" type="text" placeholder="Book Title"><br>
+        <input id="bookTitle" required type="text" placeholder="Book Title"><br>
         <label for="bookLanguage">Insert Book Language:</label>
         <input id="bookLanguage" type="text" placeholder="Book Language"><br>
         <label for="bookAuthors">Insert Book Authors:</label>
@@ -29,8 +29,8 @@
                 const languageInput = document.getElementById("bookLanguage");
                 const authorsInput = document.getElementById("bookAuthors");
                 const queryParams = new URLSearchParams({ date: dateInput.value,
-                                                          title: titleInput.value,
-                                                          language: languageInput.value,
+                                                          title: (titleInput.value).toString(),
+                                                          language: (languageInput.value).toString(),
                                                           authors: authorsInput.value }).toString();
                 const url = `/api/insertBook?${queryParams}`;
                 const response = await fetch(url, {

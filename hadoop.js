@@ -18,7 +18,7 @@ var ssh = new SSH({
 let UpdateFileFromInfo = async function() {
   try {
       // Buscar dados da tabela
-      const { data, error } = await supabase.from('books').select();
+      const { data, error } = await supabase.from('books').select().order('ID', {ascending: true});
 
       if (error) {
           throw new Error(`Erro ao buscar dados: ${error.message}`);

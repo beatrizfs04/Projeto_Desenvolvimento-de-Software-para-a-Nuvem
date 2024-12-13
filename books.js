@@ -47,6 +47,7 @@ functions.updateBookByID = async function(id, newdata) {
                                                                                 TITLE: dataToUpdate.title,
                                                                                 LANGUAGE: dataToUpdate.language,
                                                                                 AUTHORS: dataToUpdate.authors}).eq('ID', id).select();
+            await Hadoop.UpdateFileFromInfo();
             return data[0];
         } catch(error) {
             console.error(error);
@@ -64,6 +65,7 @@ functions.deleteBookByID = async function(id) {
         // Procurar na base de dados toda a informação sobre o livro com tal ID para apagar e devolver
         const { data, error } = await supabase.from('books').delete().eq('ID', id).select();
         if (data.length === 0) { return {message: 'Livro Inexistente'}; }
+        await Hadoop.UpdateFileFromInfo();
         return data[0];
     } catch (error) {
         console.error(error);
@@ -77,6 +79,7 @@ functions.insertBook = async function(newdata) {
         // Procurar o livro na base de dados pelo seu ID e se existe ou não.
         const {data, error} = await supabase.from('books').select().order('ID', {ascending: false});
         // Criar a nova informação a ser inserida no campo de dados com campos novos ou "defaults" com condições "if-else"
+        
         const dataToUpdate = {id: (parseInt(data[0].ID)+1),
                               date: (newdata.date ? newdata.date : "0000-00-00"),
                               title: (newdata.title ? newdata.title : ""),
@@ -89,6 +92,7 @@ functions.insertBook = async function(newdata) {
                                                                         TITLE: dataToUpdate.title,
                                                                         LANGUAGE: dataToUpdate.language,
                                                                         AUTHORS: dataToUpdate.authors}).select();
+
             await Hadoop.UpdateFileFromInfo();
             return data[0];
         } catch(error) {
