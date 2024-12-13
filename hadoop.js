@@ -76,6 +76,9 @@ let hadoopCommands = function() {
       ssh.exec(`/home/hadoop/hadoop/bin/hdfs dfs -rm -r -f ${hadoopOutputPath}`, {
         out: console.log.bind(console),
         err: console.error.bind(console),
+      }).exec(`/home/hadoop/hadoop/bin/hdfs dfs -rm -r ${hadoopInputPath}/catalog.csv`, {
+        out: console.log.bind(console),
+        err: console.error.bind(console),
       }).exec(`/home/hadoop/hadoop/bin/hdfs dfs -put -f ${remoteCsvFilePath} ${hadoopInputPath}`, {
           out: console.log.bind(console),
           err: console.error.bind(console),
