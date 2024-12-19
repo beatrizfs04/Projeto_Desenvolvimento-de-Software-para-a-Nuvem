@@ -2,6 +2,12 @@ const express = require('express');
 const app = express();
 var api = express.Router();
 const books = require('./books');
+const Hadoop = require('./hadoop.js');
+
+api.get('/insertAllBooks/', async(req, res) => {
+    await Hadoop.InsertAllBooks();
+    return res.status(200).json({message: "> All Books Inserted in Database."});
+});
 
 api.get('/showBooks/', async(req, res) => {
     // Executar a informação de obter todos os livros e aguardar a informação
