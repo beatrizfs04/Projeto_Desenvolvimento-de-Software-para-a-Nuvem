@@ -15,10 +15,10 @@
 ## POST:
 
 ### UpdateBook (ID, DATE, TITLE, LANGUAGE, AUTHORS):
-- curl -X POST "http://localhost:5000/api/updateBook/?id=1&date=12-12-2000&title=Titulo%20Bonito&language=en&authors=Eu" -H "Content-Type: application/json"
+- curl -X POST "http://localhost:5000/api/updateBook/?id=1&date=12-12-2024&title=Titulo%20Bonito&language=en&authors=Eu" -H "Content-Type: application/json"
 
 ### InsertBook (DATE, TITLE, LANGUAGE, AUTHORS):
-- curl -X POST "http://localhost:5000/api/insertBook/?date=12-12-2000&title=Titulo%20Bonito&language=en&authors=Eu" -H "Content-Type: application/json"
+- curl -X POST "http://localhost:5000/api/insertBook/?date=12-12-2024&title=Titulo%20Bonito&language=en&authors=Eu" -H "Content-Type: application/json"
 
 ## DELETE:
 
