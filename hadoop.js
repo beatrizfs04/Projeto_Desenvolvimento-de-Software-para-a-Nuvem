@@ -10,12 +10,6 @@ const remoteCsvFilePath = '/home/hadoop/catalog.csv'; //localização para onde 
 const hadoopInputPath = '/user/Hadoop/input'; //input do hadoop
 const hadoopOutputPath = '/user/Hadoop/output'; //output do hadoop
 
-var ssh = new SSH({
-  host: '172.17.78.182', //IP Local Casa: 10.0.0.128
-  user: 'hadoop',
-  pass: '1234'
-});
-
 /*async function InsertAllBooks() {
   return new Promise(async (resolve, reject) => {
     try {
@@ -79,7 +73,6 @@ async function UpdateFileFromInfo() {
           // Escrever todos os dados em um ficheiro CSV
           const csvData = [headers.join(','), ...data.map(row => headers.map(header => row[header]).join(','))].join('\n');
 
-          fs.unlinkSync('./catalog.csv');
           fs.writeFileSync('./catalog.csv', csvData, 'utf8');
 
           console.log(`> All Data Exported Successfully.`);
@@ -142,6 +135,12 @@ async function hadoopCommands() {
     const outputFile = './output_hadoop.txt'; // Caminho para guardar o ficheiro da informação
     let outputData = ''; // Variável para acumular todos os dados do comando cat
 
+    const ssh = new SSH({
+      host: '172.17.79.204', //IP Local Casa: 10.0.0.128
+      user: 'hadoop',
+      pass: '1234'
+    });
+
     ssh.exec(`/home/hadoop/hadoop/bin/hdfs dfs -rm -r -f ${hadoopOutputPath}`, {
             out: console.log.bind(console),
             err: console.error.bind(console),
@@ -154,46 +153,48 @@ async function hadoopCommands() {
             out: console.log.bind(console),
             err: console.error.bind(console),
         })
-        .exec(
-            `/home/hadoop/hadoop/bin/hadoop jar /home/hadoop/hadoop/share/hadoop/tools/lib/hadoop-streaming-3.3.4.jar \
-            -mapper /home/hadoop/mapper.py \
-            -reducer /home/hadoop/reducer.py \
-            -input ${hadoopInputPath}/catalog.csv \
-            -output ${hadoopOutputPath}`,
-            {
-                out: console.log.bind(console),
-                err: console.error.bind(console),
-            }
-        )
-        .exec(`/home/hadoop/hadoop/bin/hdfs dfs -cat ${hadoopOutputPath}/*`, {
+        .exec(`/home/hadoop/hadoop/bin/hdfs dfs -test -e ${hadoopInputPath}/catalog.csv`, {
             out: (data) => {
-                outputData += data; // Acumula os dados do comando cat
+              console.log('File exists:', data);
             },
             err: console.error.bind(console),
         })
+        .exec(`/home/hadoop/hadoop/bin/hadoop jar /home/hadoop/hadoop/share/hadoop/tools/lib/hadoop-streaming-3.3.4.jar -mapper /home/hadoop/mapper.py -reducer /home/hadoop/reducer.py -input ${hadoopInputPath}/catalog.csv -output ${hadoopOutputPath}`, {
+            out: console.log.bind(console),
+            err: console.error.bind(console),
+        })
+        .exec(`/home/hadoop/hadoop/bin/hdfs dfs -cat ${hadoopOutputPath}/*`, {
+            out: (data) => {
+                outputData += data;
+            },
+            err: console.error.bind(console),
+        })
+        .exec(`/home/hadoop/hadoop/bin/hdfs dfs -rm -r -f ${hadoopOutputPath}`, {
+            out: console.log.bind(console),
+            err: console.error.bind(console),
+        })
         .on('end', () => {
-            // Após todos os comandos serem executados processa-se um ficheiro novo com todos os dados de anos e quantidade
-            if (outputData !== '') {
-                fs.writeFile(outputFile, outputData, (err) => {
-                    if (err) {
-                        console.error('Erro ao tentar gravar o arquivo:', err);
-                        return reject(err);
-                    }
-                    console.log('Todos os dados foram salvos em:', outputFile);
-                    return resolve(); // Finaliza a promise com sucesso
-                });
-            } else {
-                console.error('> Any Object as Been Saved in The Cat.');
-                return reject();
-            }
+          if (outputData !== '') {
+              fs.writeFile(outputFile, outputData, (err) => {
+                  if (err) {
+                      console.error('Erro ao tentar gravar o arquivo:', err);
+                      reject(err);
+                  }
+                  console.log('Todos os dados foram salvos em:', outputFile);
+                  resolve();
+              });
+          } else {
+              console.error('> Any Object as Been Saved in The Cat.');
+              resolve();
+          }
+
+          ssh.end();
         })
         .on('error', (err) => {
             console.error('> Error Occurred During SSH:', err);
             reject(err);
         })
-        .start({
-            failure: reject,
-        });
+        .start();
   });
 }
 
@@ -201,7 +202,7 @@ async function InsertCatalog() {
   //Inicializar automáticamente a conexão à máquina virtual com o utilizador e executa tudo
   return new Promise((resolve, reject) => {
     Client({
-        host: '172.17.78.182', // IP Local Casa: 10.0.0.128
+        host: '172.17.79.204', // IP Local Casa: 10.0.0.128
         port: 22,
         username: 'hadoop',
         password: '1234',
