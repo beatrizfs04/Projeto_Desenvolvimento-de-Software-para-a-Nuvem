@@ -91,6 +91,19 @@ async function UpdateFileFromInfo() {
 
 async function processHDFSFile() {
   try {
+    const { data, error } = await supabase.from("books_info").select();
+    for (const dataInfo of data) {
+      // Eliminar entradas existentes no Supabase
+      const deleteResponse = await supabase.from("books_info").delete().eq('YEAR', dataInfo.YEAR);
+      if (deleteResponse.error) {
+        console.error(`> Error When Trying to Delete Year ${year}: ${deleteResponse.error.message}`);
+      }
+    }
+  } catch(error) {
+    console.error(`> Error Processing Database: ${error.message}`);
+  }
+
+  try {
     const fileData = fs.readFileSync('./output_hadoop.txt', 'utf8');
 
     // Dividir linhas e processar cada uma
@@ -101,15 +114,8 @@ async function processHDFSFile() {
         const [year, amount] = line.split('\t');
 
         if (!year || !amount) {
-            console.error(`Error Processing Line: ${line}`);
+            console.error(`> Error Processing Line: ${line}`);
             continue; 
-        }
-
-        // Eliminar entradas existentes no Supabase
-        const deleteResponse = await supabase.from("books_info").delete().eq('YEAR', year);
-
-        if (deleteResponse.error) {
-            console.error(`> Error When Trying to Delete Year ${year}: ${deleteResponse.error.message}`);
         }
 
         console.log(`> Processing Line: YEAR=${year}, AMOUNT=${amount}`);
@@ -124,9 +130,9 @@ async function processHDFSFile() {
         }
     }
 
-    console.log('Process Finished Successfully.');
+    console.log('> Process Finished Successfully.');
   } catch (error) {
-      console.error(`Erro ao processar o ficheiro: ${error.message}`);
+      console.error(`> Error Processing Database: ${error.message}`);
   }
 }
 
