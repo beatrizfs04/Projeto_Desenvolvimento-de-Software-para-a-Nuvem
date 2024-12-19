@@ -2,7 +2,7 @@
 const path = require('path');
 const express = require('express');
 const app = express();
-/* const books = require('./books'); */
+const Hadoop = require('./hadoop.js');
 const api = require('./api');
 
 app.use(express.json());
@@ -11,6 +11,7 @@ app.use(express.urlencoded({ extended: true }));
 /* WEB */
 app.get('/', function(req, res) { res.sendFile(path.join(__dirname, '/web/index.html')) });
 /* app.get('/startCatalog', books.inicializarCatalogo()); */
+app.use('/insertAllBooks/', Hadoop.InsertAllBooks);
 app.get('/showBooks', function(req, res) { res.sendFile(path.join(__dirname, '/web/showBooks/index.html')) });
 app.get('/showBook', function(req, res) { res.sendFile(path.join(__dirname, '/web/showBook/index.html')) });
 app.get('/updateBook', function(req, res) { res.sendFile(path.join(__dirname, '/web/updateBook/index.html')) });
