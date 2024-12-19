@@ -256,4 +256,4 @@ let InsertCatalog = async function() {
 // sudo systemctl enable start-all.service
 // sudo systemctl start start-all.service
 
-module.exports = {InsertAllBooks, UpdateFileFromInfo, processHDFSFile, hadoopCommands, InsertCatalog};
+module.exports = {/* InsertAllBooks, */ UpdateFileFromInfo, processHDFSFile, hadoopCommands, InsertCatalog};
