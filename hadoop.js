@@ -11,12 +11,12 @@ const hadoopInputPath = '/user/Hadoop/input'; //input do hadoop
 const hadoopOutputPath = '/user/Hadoop/output'; //output do hadoop
 
 var ssh = new SSH({
-  host: '172.17.72.65', //IP Local Casa: 10.0.0.128
+  host: '172.17.78.182', //IP Local Casa: 10.0.0.128
   user: 'hadoop',
   pass: '1234'
 });
 
-/* let InsertAllBooks = async function() {
+/*async function InsertAllBooks() {
   return new Promise(async (resolve, reject) => {
     try {
       const { data, error } = await supabase.from('books').delete();
@@ -39,6 +39,7 @@ var ssh = new SSH({
       })
       .on('end', async () => {
         await InsertCatalog();
+        await hadoopCommands();
         await processHDFSFile();
         resolve({
           success: true,
@@ -63,7 +64,7 @@ var ssh = new SSH({
   Desativada esta função pois em rede doméstica/residencial somos totalmente limitados à largura de banda e nem chegam a entrar metade dos livros por esse mesmo problema.
 */
 
-let UpdateFileFromInfo = async function() {
+async function UpdateFileFromInfo() {
   try {
       const { data, error } = await supabase.from('books').select().order('ID', {ascending: true});
 
@@ -78,13 +79,14 @@ let UpdateFileFromInfo = async function() {
           // Escrever todos os dados em um ficheiro CSV
           const csvData = [headers.join(','), ...data.map(row => headers.map(header => row[header]).join(','))].join('\n');
 
-          await fs.unlinkSync('./catalog.csv');
-          await fs.writeFileSync('./catalog.csv', csvData, 'utf8');
+          fs.unlinkSync('./catalog.csv');
+          fs.writeFileSync('./catalog.csv', csvData, 'utf8');
 
           console.log(`> All Data Exported Successfully.`);
 
           await InsertCatalog();
           console.log('> Catalog Inserted Successfully and Now Processing Output File.')
+          await hadoopCommands();
           await processHDFSFile();
       } else {
           console.log('> Any Data Recieved From the Table.');
@@ -94,7 +96,7 @@ let UpdateFileFromInfo = async function() {
   }
 }
 
-let processHDFSFile = async function() {
+async function processHDFSFile() {
   try {
     const fileData = fs.readFileSync('./output_hadoop.txt', 'utf8');
 
@@ -135,7 +137,7 @@ let processHDFSFile = async function() {
   }
 }
 
-let hadoopCommands = function() {
+async function hadoopCommands() {
   return new Promise((resolve, reject) => {
     const outputFile = './output_hadoop.txt'; // Caminho para guardar o ficheiro da informação
     let outputData = ''; // Variável para acumular todos os dados do comando cat
@@ -195,11 +197,11 @@ let hadoopCommands = function() {
   });
 }
 
-let InsertCatalog = async function() {
+async function InsertCatalog() {
   //Inicializar automáticamente a conexão à máquina virtual com o utilizador e executa tudo
   return new Promise((resolve, reject) => {
     Client({
-        host: '172.17.72.65', // IP Local Casa: 10.0.0.128
+        host: '172.17.78.182', // IP Local Casa: 10.0.0.128
         port: 22,
         username: 'hadoop',
         password: '1234',
@@ -208,15 +210,7 @@ let InsertCatalog = async function() {
       .then(async (response) => {
         console.log('> File Inserted and Now Running Hadoop');
         client.close();
-          try {
-              // Executar comandos do Hadoop
-              await hadoopCommands();
-              console.log('> Hadoop Commands Executed Successfully!');
-              resolve(); // Resolve a Promise após o sucesso
-          } catch (err) {
-              console.error('> Hadoop Commands Failed: ', err);
-              reject(err); // Rejeita a Promise em caso de erro
-          }
+        resolve();
       }).catch((error) => {
           console.error('> File Upload Error: ', error);
           client.close();
