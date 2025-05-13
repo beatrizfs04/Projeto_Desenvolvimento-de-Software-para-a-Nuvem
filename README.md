@@ -1,6 +1,6 @@
 # How-To
-- Em Windows, Primeiro Que Tudo, Devemos Colocar Todos os Livros na Base de Dados e Fazer o Processamento do Hadoop, Iniciando o Hadoop.bat
-- Após Isso, Devemos Inicializar a Base do Node.Js Usando o Initialize.bat e Depois Sim Podermos Usar Tanto os Comandos CURL Como o Front-End
+- Em windows, devemos colocar todos os livros na base de dados e fazer o processamento do Hadoop, iniciando o Hadoop.bat.
+- Após isso, devemos inicializar a base do Node.Js usando o initialize.bat e depois sim podermos usar tanto os comandos CURL como o Front-End.
 
 # Comandos Consola Ubuntu
 
